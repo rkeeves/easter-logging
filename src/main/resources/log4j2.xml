@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" strict="true">
+    <Properties>
+        <Property name="msgPattern">%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %notEmpty{(Iteration: %X{iter})} %msg%n</Property>
+        <Property name="logFolder">logs</Property>
+        <Property name="questionFileName">question</Property>
+        <Property name="statementFileName">statement</Property>
+        <Property name="generalFileName">general</Property>
+        <Property name="lockdownFileName">Győrfi_Pál</Property>
+        <Property name="currentTimeZone">GMT+2</Property>
+        <Property name="noCurfewStart">05:00:00</Property>
+        <Property name="noCurfewEnd">20:00:00</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${msgPattern}"/>
+        </Console>
+        <RollingFile name="QuestionFile"
+                     fileName="${logFolder}/${questionFileName}.log"
+                     filePattern="${logFolder}/${questionFileName}-%d{MM-dd-yyyy}.log.gz">
+            <Filters>
+                <MarkerFilter marker="QUESTION" onMatch="NEUTRAL" onMismatch="DENY"/>
+                <TimeFilter timezone="${currentTimeZone}" start="${noCurfewStart}" end="${noCurfewEnd}" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %notEmpty{(Iteration: %X{iter})} %msg%n"/>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+        <RollingFile name="StatementsFile"
+                     fileName="${logFolder}/${statementFileName}.log"
+                     filePattern="${logFolder}/${statementFileName}-%d{MM-dd-yyyy}.log.gz">
+            <Filters>
+                <MarkerFilter marker="STATEMENT" onMatch="NEUTRAL" onMismatch="DENY"/>
+                <TimeFilter timezone="${currentTimeZone}" start="${noCurfewStart}" end="${noCurfewEnd}" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %notEmpty{(Iteration: %X{iter})} %msg%n"/>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+        <RollingFile name="GeneralFile"
+                     fileName="${logFolder}/${generalFileName}.log"
+                     filePattern="${logFolder}/${generalFileName}-%d{MM-dd-yyyy}.log.gz">
+            <Filters>
+                <NoMarkerFilter onMatch="NEUTRAL" onMismatch="DENY"/>
+                <TimeFilter timezone="${currentTimeZone}" start="${noCurfewStart}" end="${noCurfewEnd}" onMatch="ACCEPT" onMismatch="DENY"/>
+            </Filters>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %notEmpty{(Iteration: %X{iter})} %msg%n"/>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+        <RollingFile name="Lockdown"
+                     fileName="${logFolder}/${lockdownFileName}.log"
+                     filePattern="${logFolder}/${lockdownFileName}-%d{MM-dd-yyyy}.log.gz">
+            <TimeFilter timezone="${currentTimeZone}" start="${noCurfewStart}" end="${noCurfewEnd}" onMatch="DENY" onMismatch="ACCEPT"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %notEmpty{(Iteration: %X{iter})} %msg%n"/>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="QuestionFile"/>
+            <AppenderRef ref="StatementsFile"/>
+            <AppenderRef ref="GeneralFile"/>
+            <AppenderRef ref="Lockdown"/>
+        </Root>
+    </Loggers>
+</Configuration>
